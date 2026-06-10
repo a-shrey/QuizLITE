@@ -97,9 +97,8 @@ findings preserved in docs/AUDIT-2026-06.md) concluded:
 ## 4. Phases
 
 Work phases strictly in order; each has a Definition of Done (DoD). Check boxes as you
-complete items (edit this file in the same PR as the work; until PLAN.md is merged to main,
-stack work on the `chore/cleanup-june-2026` branch). If a phase reveals this plan is wrong
-somewhere, update the plan in the same PR and say so in the PR description.
+complete items, editing this file in the same PR as the work. If a phase reveals this plan
+is wrong somewhere, update the plan in the same PR and say so in the PR description.
 
 ### Phase 0 — Repo hygiene (desktop side; agent work except where tagged)
 - [x] Audit codebase; verify all README claims (docs/AUDIT-2026-06.md)
@@ -107,12 +106,13 @@ somewhere, update the plan in the same PR and say so in the PR description.
 - [x] CMakeLists de-slopped (single GoogleTest path; SQLite3::SQLite3 + portability shim, commit e4ae498)
 - [x] README rewritten to be accurate; LICENSE file added (MIT); PLAN.md + audit doc written
 - [x] Local verification: 36/36 tests pass; clean build on macOS (Qt6, CMake 4.3)
-- [ ] Commit all pending working-tree files (PLAN.md, LICENSE, docs/, README.md, CLAUDE.md) on `chore/cleanup-june-2026` **[agent — do this first if you find them uncommitted]**
-- [ ] Push the branch **[human: push credentials]**, then confirm CI green on all 4 jobs — Ubuntu-Clang, Ubuntu-GCC, macOS, Linter; the Ubuntu jobs exercise the SQLite3 CMake shim from e4ae498 **[agent via `gh run list/view`]**
-- [ ] CI hardening: pin `actions/checkout` to the current major (v4+) in all jobs; pin googletest to a release tag in the Ubuntu install step (currently clones master — time bomb)
-- [ ] Port exactly two changes from `origin/shortcuts` onto the branch, by hand (NOT `git cherry-pick` — the branch is intermixed WIP): (1) the MainWindow leak fix, (2) the menu-bar setup. Both are described with file/line pointers in docs/AUDIT-2026-06.md §"Branch verdicts". Do NOT take `Syncing/*`, `Menu/Shortcuts.*`, or its CMakeLists/test changes
-- [ ] Open PR to main; merge **[human]**; then delete `origin/shortcuts` and the merged cleanup branch **[human: remote deletion needs credentials]**
-- **DoD:** main is green on all 4 CI jobs; PLAN.md/CLAUDE.md/LICENSE/audit doc live on main; no stale branches.
+- [x] Commit, push, PR, merge: all docs + build fixes landed on main via PR #21 (merge
+      commit 0039851, 2026-06-10); CI green on all 4 jobs — Ubuntu-Clang, Ubuntu-GCC,
+      macOS, Linter — confirming the SQLite3 CMake shim works on the Ubuntu runners
+- [ ] CI hardening: pin `actions/checkout` to the current major (v4+) in all jobs; pin googletest to a release tag in the Ubuntu install step (currently clones master — time bomb). Also: the workflow triggers on both `push` and `pull_request`, so every PR runs CI twice — restrict the `push` trigger to `main`
+- [ ] Port exactly two changes from `origin/shortcuts` onto a fresh branch, by hand (NOT `git cherry-pick` — the branch is intermixed WIP): (1) the MainWindow leak fix, (2) the menu-bar setup. Both are described with file/line pointers in docs/AUDIT-2026-06.md §"Branch verdicts". Do NOT take `Syncing/*`, `Menu/Shortcuts.*`, or its CMakeLists/test changes
+- [ ] After the port merges, delete `origin/shortcuts` **[human: remote deletion needs credentials]**
+- **DoD:** main is green on all 4 CI jobs (✅ 2026-06-10); PLAN.md/CLAUDE.md/LICENSE/audit doc live on main (✅); CI hardened; no stale branches.
 
 ### Phase 1 — Spec extraction
 - [ ] Create `ios/` directory; write `ios/SPEC.md`: precise behavior of the three study
