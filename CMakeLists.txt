@@ -11,6 +11,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedanti
 enable_testing()
 
 find_package(SQLite3 REQUIRED)
+# Some platform/toolchain combinations resolve SQLite3 through a find module
+# that reports the package found without defining the imported target.
+if(NOT TARGET SQLite3::SQLite3)
+    message(STATUS "SQLite3::SQLite3 target missing after find_package "
+            "(CMake ${CMAKE_VERSION}, lib='${SQLite3_LIBRARIES}', inc='${SQLite3_INCLUDE_DIRS}'); defining it manually")
+    add_library(SQLite3::SQLite3 UNKNOWN IMPORTED)
+    set_target_properties(SQLite3::SQLite3 PROPERTIES
+            IMPORTED_LOCATION "${SQLite3_LIBRARIES}"
+            INTERFACE_INCLUDE_DIRECTORIES "${SQLite3_INCLUDE_DIRS}")
+endif()
 find_package(GTest REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 qt_standard_project_setup()
