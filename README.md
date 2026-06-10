@@ -13,29 +13,35 @@
   <a target="_blank" href='https://github.com/features/actions'><img src='https://img.shields.io/badge/GitHub%20Actions-blue?style=for-the-badge&logo=githubactions&color=2088FF&labelColor=GitHub%20Actions&logoColor=white' alt="GitHub Actions"></a>
 </p>
 
+A lightweight desktop flashcard app that tracks per-question accuracy and focuses your review on the questions you miss most. Built in C++17 with Qt 6 Widgets and SQLite.
 
+## Project status
 
+QuizLITE was built in summer 2024 as a two-person student project. The desktop app works and its test suite passes, but it is **feature-frozen**: development effort is moving to a native iOS rewrite that keeps this app's data model and study modes as its specification. See [PLAN.md](PLAN.md) for the roadmap and [CLAUDE.md](CLAUDE.md) for architecture and development commands.
 
-A lightweight desktop flashcard app that tracks per-question accuracy and focuses your review on the questions you miss most.
+## What it does
 
-## Features
+- Create, edit, and delete study sets of question/answer pairs
+- Three study modes: **flashcards**, **multiple choice**, and **inverse multiple choice** (see the answer, pick the question)
+- Records `TotalCorrect` / `TimesAsked` per question in a local SQLite database
+- Multiple-choice sessions are seeded with the questions you've answered worst, plus a random sample
+- 36 GoogleTest cases run in CI on Ubuntu (GCC + Clang) and macOS
+- clang-format (WebKit style) enforced in CI for the core (non-UI) directories
 
-- Create, edit, and delete study sets
-- Add and manage questions and answers within sets
-- Three study modes: flashcards, multiple choice, and inverse multiple choice
-- Per-question accuracy tracking stored locally in SQLite
-- Review sessions prioritize the questions you get wrong most often
-- Desktop UI built with Qt 6 Widgets
-- 36 GoogleTest cases run on Ubuntu (GCC + Clang) and macOS via GitHub Actions
-- clang-format (WebKit style) enforced in CI
+## Known limitations
 
-## Getting Started
+These are real, verified, and documented in detail in [docs/AUDIT-2026-06.md](docs/AUDIT-2026-06.md):
 
-These instructions will help you get a copy of the project up and running on your local machine for development and testing purposes.
+- **No spaced repetition.** "Worst questions first" is a one-shot ranking at session start, not an interval scheduler. (The iOS rewrite adopts FSRS for this.)
+- **No accounts, sync, or auth.** All data lives in a local SQLite file (`StudySets.db`).
+- Most SQL is built by string concatenation, so cards containing an apostrophe can break inserts.
+- Multiple-choice option generation can hang (infinite loop) if a set larger than 4 cards has fewer than 3 distinct wrong answers — duplicate answers are allowed by the schema.
+- The flashcard mode has known session-flow bugs (first card skipped; finish button never shown).
+- The Qt UI layer (`Interface/`) is untested and excluded from CI lint.
+
+## Building
 
 ### Prerequisites
-
-What you need to install the software:
 
 - A C++17 compiler
 - CMake 3.18 or higher
@@ -46,69 +52,29 @@ What you need to install the software:
 
 On macOS: `brew install cmake qt googletest sqlite3`
 
-### Installing
+### Build and run
 
-A step-by-step guide to set up your development environment:
+```bash
+git clone https://github.com/a-shrey/QuizLITE.git
+cd QuizLITE
+cmake -S . -B build
+cmake --build build -j8
+./build/QuizLITE
+```
 
-1. Clone the repository:
+### Tests
 
-    ```bash
-    git clone https://github.com/aditya-shrey/quizlite.git
-    ```
+```bash
+cd build && ctest --output-on-failure          # full suite
+./build/TestExecutables --gtest_filter='MultipleChoiceTest.*'   # one fixture
+```
 
-2. Navigate to the project directory:
-
-    ```bash
-    cd quizlite
-    ```
-
-3. Create a build directory and navigate into it:
-
-    ```bash
-    mkdir build && cd build
-    ```
-
-4. Run CMake to configure the project:
-
-    ```bash
-    cmake ..
-    ```
-
-5. Build the project:
-
-    ```bash
-    cmake --build .
-    ```
-
-6. Run the application:
-
-    ```bash
-    ./QuizLITE
-    ```
-
-## Running the Tests
-
-To run the tests, ensure you are in the build directory and execute:
-
-  ```bash
-  ctest
-  ```
-
-## Deployment
-
-Deployment specifics depend on your target environment. Ensure to follow your internal guidelines for deploying C++/Qt applications.
-
-## Built With
-
-- C++ - Primary programming language
-- CMake - Build system
-- SQLite - Database engine
-- Qt - UI framework
-- GoogleTest (GTest) - Testing framework
-- GitHub Actions - CI/CD
+The test target does not link Qt — only the database, session, and study-method layers are covered.
 
 ## Contributing
-Contributions to this project are welcome. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+
+This is a personal side project. Issues and PRs are welcome, but read [PLAN.md](PLAN.md) first — new feature work targets the iOS rewrite, not the Qt app.
 
 ## License
-This project is licensed under the MIT License. Feel free to use and modify the code as per the license terms.
+
+MIT — see [LICENSE](LICENSE).

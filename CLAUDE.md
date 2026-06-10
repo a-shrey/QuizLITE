@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 QuizLITE is a C++17 desktop flashcard app built with Qt6 Widgets and SQLite (raw `sqlite3` C API, no ORM). Study sets are created in-app and studied via three modes: flashcards, multiple choice, and inverse multiple choice (answer → pick the question). Per-question stats (`TotalCorrect`, `TimesAsked`) are stored in SQLite.
 
+**Read PLAN.md before doing any feature work.** The desktop app is feature-frozen (maintenance/CI fixes only); active development targets a native iOS rewrite under `ios/`, with phases, binding decisions, and anti-scope defined in PLAN.md.
+
 ## Build, test, lint
 
 ```bash
@@ -36,7 +38,7 @@ CI (`.github/workflows/build.yml`) runs the test suite on Ubuntu (Clang + GCC) a
 Three layers, glued by two singletons:
 
 - **`Database/DatabaseManager`** — singleton wrapper over the `sqlite3` C API (`getDatabaseManager(dbName)`). Executes raw SQL strings; `executeQueryWithResults` returns rows as `vector<map<column, value>>`.
-- **`User/UserSession`** — singleton facade that owns all SQL. Despite the name there is no user/auth concept; it is the data-access layer the UI and study methods call (`createStudySet`, `addToStudySet`, `updateScore`, `getLowestAccuracies`, `getRandomEntries`, …). The app database is `user_data.db` in the working directory.
+- **`User/UserSession`** — singleton facade that owns all SQL. Despite the name there is no user/auth concept; it is the data-access layer the UI and study methods call (`createStudySet`, `addToStudySet`, `updateScore`, `getLowestAccuracies`, `getRandomEntries`, …). The app database is `StudySets.db` in the working directory.
 - **`StudyingMethods/`** — `StudyMethods` is an abstract base (`getQuestion`/`getAnswer`/`goToNextQuestion`); `Flashcards`, `MultipleChoice`, and `InverseMultipleChoice` implement it by pulling question lists from `UserSession` ("adaptive" = lowest-accuracy questions first via `getLowestAccuracies`).
 - **`Interface/`** — `MainWindow` holds a `QStackedWidget` of page widgets (`LibraryPage`, `CreateSetPage`, `AddQuestionsPage`, `EnterSetPage`, `FlashcardPage`, `MCPage`, `InverseMCPage`). Pages signal up to `MainWindow` slots, which switch pages and call `UserSession`. `main.cpp` only instantiates `MainWindow`.
 
