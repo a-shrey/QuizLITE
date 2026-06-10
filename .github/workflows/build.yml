@@ -47,7 +47,6 @@ jobs:
         run: |
           mkdir build
           cd build
-          export QT_DIR=$(ls -d /opt/hostedtoolcache/Qt/*/*/gcc_64)
           cmake -DCMAKE_C_COMPILER=${{ matrix.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} ..
 
       - name: Build

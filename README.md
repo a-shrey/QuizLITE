@@ -8,7 +8,7 @@
   <a target="_blank" href='https://isocpp.org/'><img src='https://img.shields.io/badge/C++-blue?style=for-the-badge&logo=cplusplus&color=00599C&labelColor=C++&logoColor=white' alt="C++"></a>
   <a target="_blank" href='https://cmake.org/'><img src='https://img.shields.io/badge/CMake-blue?style=for-the-badge&logo=cmake&color=064F8C&labelColor=CMake&logoColor=white' alt="CMake"></a>
   <a target="_blank" href='https://www.sqlite.org/'><img src='https://img.shields.io/badge/SQLite-blue?style=for-the-badge&logo=sqlite&color=003B57&labelColor=SQLite&logoColor=white' alt="SQLite"></a>
-  <a target="_blank" hπref='https://www.qt.io/'><img src='https://img.shields.io/badge/Qt-blue?style=for-the-badge&logo=qt&color=41CD52&labelColor=Qt&logoColor=white' alt="Qt"></a>
+  <a target="_blank" href='https://www.qt.io/'><img src='https://img.shields.io/badge/Qt-blue?style=for-the-badge&logo=qt&color=41CD52&labelColor=Qt&logoColor=white' alt="Qt"></a>
   <a target="_blank" href='https://github.com/google/googletest'><img src='https://img.shields.io/badge/GTest-blue?style=for-the-badge&logo=google&color=4285F4&labelColor=GTest&logoColor=white' alt="GTest"></a>
   <a target="_blank" href='https://github.com/features/actions'><img src='https://img.shields.io/badge/GitHub%20Actions-blue?style=for-the-badge&logo=githubactions&color=2088FF&labelColor=GitHub%20Actions&logoColor=white' alt="GitHub Actions"></a>
 </p>
@@ -16,18 +16,18 @@
 
 
 
-A modern flashcard application designed for efficient learning and content management with adaptive study sessions.
+A lightweight desktop flashcard app that tracks per-question accuracy and focuses your review on the questions you miss most.
 
 ## Features
 
 - Create, edit, and delete study sets
 - Add and manage questions and answers within sets
-- User authentication and session management
-- Real-time data storage and retrieval using SQLite
-- Adaptive study sessions to optimize learning efficiency
-- Responsive and intuitive UI built with Qt
-- Automated testing using GTest
-- Continuous integration with GitHub Actions
+- Three study modes: flashcards, multiple choice, and inverse multiple choice
+- Per-question accuracy tracking stored locally in SQLite
+- Review sessions prioritize the questions you get wrong most often
+- Desktop UI built with Qt 6 Widgets
+- 36 GoogleTest cases run on Ubuntu (GCC + Clang) and macOS via GitHub Actions
+- clang-format (WebKit style) enforced in CI
 
 ## Getting Started
 
@@ -37,12 +37,14 @@ These instructions will help you get a copy of the project up and running on you
 
 What you need to install the software:
 
-- C++17 or higher
-- CMake 3.10 or higher
-- Qt 5.12 or higher
-- SQLite
+- A C++17 compiler
+- CMake 3.18 or higher
+- Qt 6 (Core, Gui, Widgets)
+- SQLite3
 - GoogleTest
 - Git
+
+On macOS: `brew install cmake qt googletest sqlite3`
 
 ### Installing
 
